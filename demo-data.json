@@ -1,0 +1,70 @@
+{
+  "reports": [
+    {
+      "id": "紫金黄金国际_20251013",
+      "company": "紫金黄金国际",
+      "date": "2025-10-13",
+      "status": "completed",
+      "analysisTypes": ["管理层分析", "商业模式研究", "竞争格局分析", "估值分析", "股权分布研究"],
+      "duration": "15分钟",
+      "accuracy": 96,
+      "fileSize": "2.3MB",
+      "path": "/Users/huangjunpeng/quantagent/finance-claude-code-agent-reports/紫金黄金国际/20251013",
+      "createdAt": "2025-10-13T23:39:27.895Z"
+    },
+    {
+      "id": "泡泡玛特_20251001",
+      "company": "泡泡玛特",
+      "date": "2025-10-01",
+      "status": "completed",
+      "analysisTypes": ["管理层分析", "商业模式研究", "竞争格局分析", "估值分析", "股权分布研究"],
+      "duration": "18分钟",
+      "accuracy": 94,
+      "fileSize": "2.8MB",
+      "path": "/Users/huangjunpeng/quantagent/finance-claude-code-agent-reports/泡泡玛特/20251001",
+      "createdAt": "2025-10-01T14:28:39.642Z"
+    }
+  ],
+  "stats": {
+    "totalAnalyses": 156,
+    "completedToday": 8,
+    "successRate": 94.2,
+    "avgDuration": 12.5
+  },
+  "performanceData": [
+    { "name": "周一", "analyses": 12, "accuracy": 94 },
+    { "name": "周二", "analyses": 15, "accuracy": 96 },
+    { "name": "周三", "analyses": 8, "accuracy": 92 },
+    { "name": "周四", "analyses": 18, "accuracy": 95 },
+    { "name": "周五", "analyses": 22, "accuracy": 97 },
+    { "name": "周六", "analyses": 16, "accuracy": 93 },
+    { "name": "周日", "analyses": 10, "accuracy": 94 }
+  ],
+  "agentStatus": [
+    {
+      "name": "管理层分析Agent",
+      "status": "running",
+      "lastExecution": "2分钟前"
+    },
+    {
+      "name": "商业模式研究Agent",
+      "status": "idle",
+      "lastExecution": "5分钟前"
+    },
+    {
+      "name": "竞争格局分析Agent",
+      "status": "running",
+      "lastExecution": "进行中"
+    },
+    {
+      "name": "估值分析Agent",
+      "status": "idle",
+      "lastExecution": "8分钟前"
+    },
+    {
+      "name": "股权分布研究Agent",
+      "status": "idle",
+      "lastExecution": "10分钟前"
+    }
+  ]
+}

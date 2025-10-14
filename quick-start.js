@@ -8,8 +8,14 @@
 const { spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs');
+const { config } = require('./config');
 
 console.log('🚀 股票分析Agent前端系统快速启动...\n');
+console.log('📁 使用配置:');
+console.log(`   Agent路径: ${config.AGENT_PATH}`);
+console.log(`   报告路径: ${config.REPORTS_PATH}`);
+console.log(`   服务器端口: ${config.SERVER_PORT}`);
+console.log(`   前端端口: ${config.CLIENT_PORT}\n`);
 
 // 检查依赖是否已安装
 if (!fs.existsSync(path.join(__dirname, 'node_modules'))) {

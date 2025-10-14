@@ -6,12 +6,13 @@ const { spawn } = require('child_process');
 const fs = require('fs-extra');
 const path = require('path');
 const chokidar = require('chokidar');
+const { config } = require('../config');
 
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: config.CORS_ORIGIN,
     methods: ["GET", "POST"]
   }
 });
@@ -19,9 +20,9 @@ const io = socketIo(server, {
 app.use(cors());
 app.use(express.json());
 
-// 配置路径
-const AGENT_PATH = '/Users/huangjunpeng/quantagent/finance-claude-code-agent';
-const REPORTS_PATH = '/Users/huangjunpeng/quantagent/finance-claude-code-agent-reports';
+// 使用配置文件中的路径
+const AGENT_PATH = config.AGENT_PATH;
+const REPORTS_PATH = config.REPORTS_PATH;
 
 // 存储活跃的分析任务
 const activeTasks = new Map();
@@ -722,11 +723,12 @@ function getDisplayName(agentName) {
 }
 
 // 启动服务器
-const PORT = process.env.PORT || 3001;
+const PORT = config.SERVER_PORT;
 server.listen(PORT, () => {
-  console.log(`服务器运行在端口 ${PORT}`);
-  console.log(`Agent路径: ${AGENT_PATH}`);
-  console.log(`报告路径: ${REPORTS_PATH}`);
+  console.log(`🚀 服务器运行在端口 ${PORT}`);
+  console.log(`📁 Agent路径: ${AGENT_PATH}`);
+  console.log(`📊 报告路径: ${REPORTS_PATH}`);
+  console.log(`🌐 CORS源: ${config.CORS_ORIGIN}`);
 });
 
 // 优雅关闭

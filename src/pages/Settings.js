@@ -65,8 +65,8 @@ const Settings = () => {
         layout="vertical"
         onFinish={handleSave}
         initialValues={{
-          reportsPath: '/Users/huangjunpeng/quantagent/finance-claude-code-agent-reports',
-          agentPath: '/Users/huangjunpeng/quantagent/finance-claude-code-agent',
+          reportsPath: process.env.REACT_APP_REPORTS_PATH || '/path/to/finance-claude-code-agent-reports',
+          agentPath: process.env.REACT_APP_AGENT_PATH || '/path/to/finance-claude-code-agent',
           autoSave: true,
           autoGitCommit: true,
           githubRepo: 'https://github.com/quantagent/finance-claude-code-agent-reports.git',
