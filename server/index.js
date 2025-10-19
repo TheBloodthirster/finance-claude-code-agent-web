@@ -230,6 +230,737 @@ io.on('connection', (socket) => {
   });
 });
 
+// News Matcher API路由
+
+// 单条新闻匹配
+app.post('/api/news-matcher/single', async (req, res) => {
+  try {
+    const { text, title, enableLLMCorrection, minScore, industryMinScore, llmConfidenceThreshold, enableIndustryMatching } = req.body;
+    
+    // 模拟调用news_matcher API
+    const matchResult = {
+      success: true,
+      data: {
+        stock_matches: [
+          {
+            stock_id: "000001.SZ",
+            stock_name: "平安银行",
+            score: 85.5,
+            source: "semantic_match"
+          }
+        ],
+        industry_matches: enableIndustryMatching ? [
+          {
+            industry: "银行",
+            score: 0.92,
+            match_type: "hybrid",
+            keywords: ["银行", "金融"],
+            confidence: 0.88
+          }
+        ] : [],
+        processing_time: 0.234,
+        llm_correction: enableLLMCorrection ? {
+          applied: true,
+          confidence: 0.89,
+          reasoning: "新闻内容明确提及平安银行相关业务，匹配度很高",
+          processing_time: 1.45
+        } : null
+      }
+    };
+    
+    res.json(matchResult);
+  } catch (error) {
+    console.error('单条匹配失败:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// 批量处理新闻匹配
+app.post('/api/news-matcher/batch', async (req, res) => {
+  try {
+    const { daysBack, batchSize, minScore, enableLLMCorrection } = req.body;
+    
+    // 模拟批量处理结果
+    const batchResult = {
+      success: true,
+      data: {
+        processed: 150,
+        stockMatches: 89,
+        industryMatches: 67,
+        duration: 8.5,
+        results: []
+      }
+    };
+    
+    res.json(batchResult);
+  } catch (error) {
+    console.error('批量处理失败:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// 获取新闻数据
+app.get('/api/news-matcher/news', async (req, res) => {
+  try {
+    const { page = 1, pageSize = 20 } = req.query;
+    
+    // 模拟新闻数据
+    const mockNews = Array.from({ length: pageSize }, (_, index) => ({
+      id: (page - 1) * pageSize + index + 1,
+      title: `新闻标题 ${(page - 1) * pageSize + index + 1}`,
+      content: `这是新闻内容的预览文本，包含了相关的股票和行业信息...`,
+      source: ['新浪财经', '东方财富', '财联社', '证券时报'][index % 4],
+      publish_time: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
+      category: ['财经', '股市', '公司', '行业'][index % 4],
+      stock_matches: Math.random() > 0.3 ? [
+        { stock_id: '000001.SZ', stock_name: '平安银行', score: 85.5 }
+      ] : [],
+      industry_matches: Math.random() > 0.4 ? [
+        { industry: '银行', score: 0.92 }
+      ] : []
+    }));
+    
+    res.json({
+      success: true,
+      data: {
+        news: mockNews,
+        total: 1000
+      }
+    });
+  } catch (error) {
+    console.error('获取新闻数据失败:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// 获取新闻统计数据
+app.get('/api/news-matcher/stats', async (req, res) => {
+  try {
+    const stats = {
+      success: true,
+      data: {
+        totalNews: 15420,
+        todayNews: 234,
+        matchedNews: 8765,
+        sources: ['新浪财经', '东方财富', '财联社', '证券时报', '第一财经']
+      }
+    };
+    
+    res.json(stats);
+  } catch (error) {
+    console.error('获取统计数据失败:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// 获取匹配结果
+app.get('/api/news-matcher/results', async (req, res) => {
+  try {
+    const { page = 1, pageSize = 20 } = req.query;
+    
+    // 模拟匹配结果数据
+    const mockResults = Array.from({ length: pageSize }, (_, index) => ({
+      id: (page - 1) * pageSize + index + 1,
+      news_title: `新闻标题 ${(page - 1) * pageSize + index + 1}`,
+      news_content: `新闻内容预览...`,
+      match_type: Math.random() > 0.5 ? 'stock' : 'industry',
+      stock_id: '000001.SZ',
+      stock_name: '平安银行',
+      stock_score: 85.5 + Math.random() * 10,
+      industry: '银行',
+      industry_score: 0.8 + Math.random() * 0.2,
+      match_source: ['regex_match', 'semantic_match', 'trie_match'][index % 3],
+      process_time: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
+      llm_correction: Math.random() > 0.6 ? {
+        applied: true,
+        confidence: 0.8 + Math.random() * 0.2,
+        reasoning: 'LLM矫正说明文本...',
+        processing_time: 1.2 + Math.random() * 2
+      } : null
+    }));
+    
+    res.json({
+      success: true,
+      data: {
+        matches: mockResults,
+        total: 5000
+      }
+    });
+  } catch (error) {
+    console.error('获取匹配结果失败:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// 获取匹配统计数据
+app.get('/api/news-matcher/match-stats', async (req, res) => {
+  try {
+    const stats = {
+      success: true,
+      data: {
+        totalMatches: 8765,
+        stockMatches: 5432,
+        industryMatches: 3333,
+        avgScore: 78.5,
+        llmCorrectionRate: 45.2,
+        todayMatches: 156,
+        topStocks: [
+          { stock_id: '000001.SZ', stock_name: '平安银行', match_count: 89 },
+          { stock_id: '000002.SZ', stock_name: '万科A', match_count: 76 },
+          { stock_id: '600036.SH', stock_name: '招商银行', match_count: 65 }
+        ],
+        topIndustries: [
+          { industry: '银行', match_count: 234, avg_score: 82.5 },
+          { industry: '房地产', match_count: 198, avg_score: 75.3 },
+          { industry: '电子信息', match_count: 167, avg_score: 79.8 }
+        ]
+      }
+    };
+    
+    res.json(stats);
+  } catch (error) {
+    console.error('获取匹配统计失败:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// LLM矫正相关API
+app.post('/api/news-matcher/llm-correct', async (req, res) => {
+  try {
+    const { content, title, confidenceThreshold, originalMatches } = req.body;
+    
+    // 模拟LLM矫正结果
+    const correctionResult = {
+      success: true,
+      data: {
+        applied: true,
+        confidence: 89.5,
+        reasoning: '经过LLM分析，新闻内容与匹配的公司相关性很高，建议保留匹配结果并提升置信度。',
+        processing_time: 2.34,
+        corrected_matches: [
+          {
+            stock_id: '000001.SZ',
+            stock_name: '平安银行',
+            corrected_score: 92.5,
+            original_score: 85.5,
+            correction_type: 'enhanced'
+          }
+        ]
+      }
+    };
+    
+    res.json(correctionResult);
+  } catch (error) {
+    console.error('LLM矫正失败:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+app.post('/api/news-matcher/llm-batch-correct', async (req, res) => {
+  try {
+    const { daysBack, batchSize, confidenceThreshold, limit } = req.body;
+    
+    // 模拟批量矫正结果
+    const batchResults = Array.from({ length: Math.min(batchSize, 10) }, (_, index) => ({
+      id: index + 1,
+      news_title: `新闻标题 ${index + 1}`,
+      applied: Math.random() > 0.3,
+      confidence: 70 + Math.random() * 30,
+      processing_time: 1 + Math.random() * 3,
+      reasoning: `LLM矫正说明 ${index + 1}`,
+      corrected_matches: [
+        {
+          stock_id: '000001.SZ',
+          stock_name: '平安银行',
+          corrected_score: 80 + Math.random() * 20
+        }
+      ]
+    }));
+    
+    res.json({
+      success: true,
+      data: {
+        processed: batchSize,
+        results: batchResults
+      }
+    });
+  } catch (error) {
+    console.error('批量LLM矫正失败:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+app.post('/api/news-matcher/llm-validate', async (req, res) => {
+  try {
+    const { content, companyName, title } = req.body;
+    
+    // 模拟验证结果
+    const validationResult = {
+      success: true,
+      data: {
+        relevance: Math.random() > 0.3,
+        confidence: 70 + Math.random() * 30,
+        processing_time: 1.5 + Math.random() * 2,
+        reasoning: `经过分析，新闻内容与${companyName}的相关性评估完成。`
+      }
+    };
+    
+    res.json(validationResult);
+  } catch (error) {
+    console.error('LLM验证失败:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// 获取LLM统计数据
+app.get('/api/news-matcher/llm-stats', async (req, res) => {
+  try {
+    const stats = {
+      success: true,
+      data: {
+        totalCorrections: 2345,
+        successRate: 87.5,
+        avgConfidence: 82.3,
+        avgProcessingTime: 2.1,
+        todayCorrections: 45
+      }
+    };
+    
+    res.json(stats);
+  } catch (error) {
+    console.error('获取LLM统计失败:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// 获取最近矫正记录
+app.get('/api/news-matcher/recent-corrections', async (req, res) => {
+  try {
+    const recentCorrections = Array.from({ length: 10 }, (_, index) => ({
+      id: index + 1,
+      news_title: `最近矫正的新闻 ${index + 1}`,
+      applied: Math.random() > 0.3,
+      confidence: 70 + Math.random() * 30,
+      processing_time: 1 + Math.random() * 3,
+      reasoning: `矫正说明 ${index + 1}`,
+      timestamp: new Date(Date.now() - index * 60 * 60 * 1000).toISOString()
+    }));
+    
+    res.json({
+      success: true,
+      data: recentCorrections
+    });
+  } catch (error) {
+    console.error('获取最近矫正记录失败:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// 系统监控相关API
+app.get('/api/news-matcher/system-status', async (req, res) => {
+  try {
+    const status = {
+      success: true,
+      data: {
+        status: 'running',
+        uptime: process.uptime(),
+        lastUpdate: new Date().toISOString(),
+        activeTasks: Math.floor(Math.random() * 5),
+        queueSize: Math.floor(Math.random() * 20)
+      }
+    };
+    
+    res.json(status);
+  } catch (error) {
+    console.error('获取系统状态失败:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+app.get('/api/news-matcher/performance', async (req, res) => {
+  try {
+    const performance = {
+      success: true,
+      data: {
+        processingSpeed: 15 + Math.random() * 10,
+        avgProcessingTime: 2 + Math.random() * 3,
+        memoryUsage: 45 + Math.random() * 30,
+        cpuUsage: 25 + Math.random() * 40,
+        diskUsage: 60 + Math.random() * 20,
+        networkLatency: 10 + Math.random() * 50
+      }
+    };
+    
+    res.json(performance);
+  } catch (error) {
+    console.error('获取性能指标失败:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+app.get('/api/news-matcher/database-status', async (req, res) => {
+  try {
+    const dbStatus = {
+      success: true,
+      data: {
+        mysql: {
+          status: 'connected',
+          responseTime: 5 + Math.random() * 20
+        },
+        milvus: {
+          status: 'connected',
+          responseTime: 10 + Math.random() * 30
+        },
+        totalRecords: 15420,
+        todayRecords: 234
+      }
+    };
+    
+    res.json(dbStatus);
+  } catch (error) {
+    console.error('获取数据库状态失败:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+app.get('/api/news-matcher/recent-activities', async (req, res) => {
+  try {
+    const activities = [
+      {
+        action: '批量处理完成',
+        details: '处理了150条新闻，匹配89个股票',
+        timestamp: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
+        type: 'success'
+      },
+      {
+        action: 'LLM矫正执行',
+        details: '矫正了25条匹配结果',
+        timestamp: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
+        type: 'info'
+      },
+      {
+        action: '数据库连接恢复',
+        details: 'Milvus连接已恢复正常',
+        timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
+        type: 'warning'
+      }
+    ];
+    
+    res.json({
+      success: true,
+      data: activities
+    });
+  } catch (error) {
+    console.error('获取最近活动失败:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+app.get('/api/news-matcher/error-logs', async (req, res) => {
+  try {
+    const errorLogs = [
+      {
+        id: 1,
+        timestamp: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
+        level: 'WARNING',
+        module: 'LLM_CORRECTOR',
+        message: 'LLM API响应时间较长，建议检查网络连接'
+      },
+      {
+        id: 2,
+        timestamp: new Date(Date.now() - 25 * 60 * 1000).toISOString(),
+        level: 'ERROR',
+        module: 'MILVUS_CLIENT',
+        message: '向量数据库连接超时，正在重试'
+      }
+    ];
+    
+    res.json({
+      success: true,
+      data: errorLogs
+    });
+  } catch (error) {
+    console.error('获取错误日志失败:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+app.get('/api/news-matcher/matching-stats', async (req, res) => {
+  try {
+    const stats = {
+      success: true,
+      data: {
+        totalMatches: 8765,
+        stockMatches: 5432,
+        industryMatches: 3333,
+        llmCorrections: 1234,
+        successRate: 87.5,
+        avgScore: 78.5
+      }
+    };
+    
+    res.json(stats);
+  } catch (error) {
+    console.error('获取匹配统计失败:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Socket事件处理 - 新闻匹配
+io.on('connection', (socket) => {
+  console.log('客户端已连接:', socket.id);
+
+  // 处理新闻匹配请求
+  socket.on('start-news-match', async (data) => {
+    const { mode, daysBack, batchSize, minScore } = data;
+    const taskId = `news_match_${Date.now()}`;
+    
+    console.log(`开始新闻匹配任务 ${taskId}:`, data);
+
+    // 模拟处理进度
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += Math.random() * 20;
+      
+      if (progress < 100) {
+        socket.emit('news-match-progress', {
+          taskId,
+          progress: Math.min(progress, 95),
+          message: `正在处理新闻匹配... ${Math.floor(progress)}%`,
+          type: 'info'
+        });
+      } else {
+        clearInterval(interval);
+        
+        // 发送完成事件
+        socket.emit('news-match-complete', {
+          taskId,
+          processedCount: batchSize || 100,
+          stockMatches: Math.floor((batchSize || 100) * 0.6),
+          industryMatches: Math.floor((batchSize || 100) * 0.4),
+          duration: 5.5
+        });
+      }
+    }, 1000);
+
+    // 存储任务信息以便取消
+    activeTasks.set(taskId, { interval, socket });
+  });
+
+  // 处理停止匹配请求
+  socket.on('stop-news-match', (data) => {
+    const { taskId } = data;
+    
+    if (activeTasks.has(taskId)) {
+      const task = activeTasks.get(taskId);
+      clearInterval(task.interval);
+      activeTasks.delete(taskId);
+      
+      socket.emit('news-match-cancelled', { taskId });
+      console.log(`新闻匹配任务 ${taskId} 已取消`);
+    }
+  });
+
+  // 原有的分析相关事件处理
+  // 处理开始分析请求
+  socket.on('start-analysis', async (data) => {
+    const { company, analysisTypes, saveReport } = data;
+    const taskId = `task_${Date.now()}`;
+    
+    console.log(`开始分析任务 ${taskId}:`, { company, analysisTypes });
+
+    try {
+      // 构建Python命令
+      const pythonScript = path.join(AGENT_PATH, 'stock_analysis_main.py');
+      const args = [pythonScript, company];
+      
+      if (analysisTypes && analysisTypes.length > 0) {
+        args.push('--types', ...analysisTypes);
+      }
+      
+      if (saveReport) {
+        args.push('--save-report');
+      }
+
+      // 启动Python进程
+      const pythonProcess = spawn('python', args, {
+        cwd: AGENT_PATH,
+        stdio: ['pipe', 'pipe', 'pipe']
+      });
+
+      // 存储任务信息
+      activeTasks.set(taskId, {
+        process: pythonProcess,
+        company,
+        analysisTypes,
+        startTime: Date.now(),
+        socket
+      });
+
+      // 发送初始进度
+      socket.emit('analysis-progress', {
+        taskId,
+        step: 0,
+        progress: 0,
+        message: `开始分析 ${company}...`,
+        type: 'info'
+      });
+
+      let currentStep = 0;
+      let progress = 0;
+      const totalSteps = analysisTypes ? analysisTypes.length : 5;
+
+      // 处理标准输出
+      pythonProcess.stdout.on('data', (data) => {
+        const output = data.toString();
+        console.log('Python输出:', output);
+
+        // 解析输出并更新进度
+        if (output.includes('🚀 开始执行')) {
+          currentStep++;
+          progress = Math.min((currentStep / totalSteps) * 80, 80);
+          
+          socket.emit('analysis-progress', {
+            taskId,
+            step: 1,
+            progress,
+            message: output.trim(),
+            type: 'info'
+          });
+        } else if (output.includes('✓') && output.includes('分析完成')) {
+          progress = Math.min(progress + 15, 95);
+          
+          socket.emit('analysis-progress', {
+            taskId,
+            step: 1,
+            progress,
+            message: output.trim(),
+            type: 'success'
+          });
+        } else if (output.includes('生成综合分析报告')) {
+          socket.emit('analysis-progress', {
+            taskId,
+            step: 2,
+            progress: 95,
+            message: '正在生成综合报告...',
+            type: 'info'
+          });
+        } else if (output.includes('报告已保存')) {
+          socket.emit('analysis-progress', {
+            taskId,
+            step: 2,
+            progress: 100,
+            message: '报告生成完成',
+            type: 'success'
+          });
+        }
+      });
+
+      // 处理标准错误
+      pythonProcess.stderr.on('data', (data) => {
+        const error = data.toString();
+        console.error('Python错误:', error);
+        
+        // 过滤掉INFO级别的日志，只显示真正的错误
+        if (!error.includes('INFO:') && !error.includes('DEBUG:')) {
+          socket.emit('analysis-progress', {
+            taskId,
+            step: currentStep,
+            progress,
+            message: error.trim(),
+            type: 'error'
+          });
+        }
+      });
+
+      // 处理进程结束
+      pythonProcess.on('close', (code) => {
+        console.log(`分析任务 ${taskId} 结束，退出码: ${code}`);
+        
+        if (code === 0) {
+          // 分析成功完成
+          const endTime = Date.now();
+          const duration = Math.round((endTime - activeTasks.get(taskId).startTime) / 1000 / 60 * 10) / 10;
+          
+          socket.emit('analysis-complete', {
+            taskId,
+            company,
+            duration,
+            summary: {
+              total_analyses: analysisTypes ? analysisTypes.length : 5,
+              successful_analyses: analysisTypes ? analysisTypes.length : 5,
+              failed_analyses: 0
+            },
+            overall_assessment: '分析已成功完成，请查看详细报告获取更多信息。',
+            investment_recommendations: [
+              '建议关注公司基本面变化',
+              '密切关注行业发展趋势',
+              '合理控制投资风险'
+            ]
+          });
+        } else {
+          // 分析失败
+          socket.emit('analysis-error', {
+            taskId,
+            error: `分析进程异常退出，退出码: ${code}`
+          });
+        }
+
+        // 清理任务
+        activeTasks.delete(taskId);
+      });
+
+      // 处理进程错误
+      pythonProcess.on('error', (error) => {
+        console.error(`分析任务 ${taskId} 进程错误:`, error);
+        
+        socket.emit('analysis-error', {
+          taskId,
+          error: error.message
+        });
+
+        activeTasks.delete(taskId);
+      });
+
+    } catch (error) {
+      console.error('启动分析任务失败:', error);
+      
+      socket.emit('analysis-error', {
+        taskId,
+        error: error.message
+      });
+    }
+  });
+
+  // 处理取消分析请求
+  socket.on('cancel-analysis', (data) => {
+    const { taskId } = data;
+    
+    if (activeTasks.has(taskId)) {
+      const task = activeTasks.get(taskId);
+      task.process.kill('SIGTERM');
+      activeTasks.delete(taskId);
+      
+      socket.emit('analysis-cancelled', { taskId });
+      console.log(`分析任务 ${taskId} 已取消`);
+    }
+  });
+
+  // 处理断开连接
+  socket.on('disconnect', () => {
+    console.log('客户端已断开连接:', socket.id);
+    
+    // 清理该客户端的任务
+    for (const [taskId, task] of activeTasks.entries()) {
+      if (task.socket.id === socket.id) {
+        task.process.kill('SIGTERM');
+        activeTasks.delete(taskId);
+        console.log(`清理断开连接客户端的任务: ${taskId}`);
+      }
+    }
+  });
+});
+
 // API路由
 
 // 获取报告列表

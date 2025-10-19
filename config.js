@@ -28,6 +28,14 @@ class WebConfig {
     // SubAgent配置目录
     this.SUBAGENT_CONFIG_DIR = path.join(this.AGENT_PATH, '.iflow', 'agents', 'stock-analysis');
     
+    // News Matcher配置
+    this.NEWS_MATCHER_PATH = process.env.NEWS_MATCHER_DIR || 
+      path.resolve(this.PROJECT_ROOT, '..', 'news_matcher');
+    
+    this.NEWS_MATCHER_API_PORT = process.env.NEWS_MATCHER_API_PORT || 5000;
+    this.NEWS_MATCHER_API_URL = process.env.NEWS_MATCHER_API_URL || 
+      `http://localhost:${this.NEWS_MATCHER_API_PORT}`;
+    
     // 验证路径是否存在
     this.validatePaths();
   }
@@ -35,7 +43,8 @@ class WebConfig {
   validatePaths() {
     const requiredPaths = [
       { name: 'AGENT_PATH', path: this.AGENT_PATH },
-      { name: 'REPORTS_PATH', path: this.REPORTS_PATH }
+      { name: 'REPORTS_PATH', path: this.REPORTS_PATH },
+      { name: 'NEWS_MATCHER_PATH', path: this.NEWS_MATCHER_PATH }
     ];
     
     for (const { name, path: dirPath } of requiredPaths) {
@@ -64,6 +73,10 @@ class WebConfig {
     return path.join(this.REPORTS_PATH, company, date);
   }
   
+  getNewsMatcherConfigPath() {
+    return path.join(this.NEWS_MATCHER_PATH, 'config', 'settings.py');
+  }
+  
   toObject() {
     return {
       PROJECT_ROOT: this.PROJECT_ROOT,
@@ -72,7 +85,10 @@ class WebConfig {
       SERVER_PORT: this.SERVER_PORT,
       CLIENT_PORT: this.CLIENT_PORT,
       CORS_ORIGIN: this.CORS_ORIGIN,
-      SUBAGENT_CONFIG_DIR: this.SUBAGENT_CONFIG_DIR
+      SUBAGENT_CONFIG_DIR: this.SUBAGENT_CONFIG_DIR,
+      NEWS_MATCHER_PATH: this.NEWS_MATCHER_PATH,
+      NEWS_MATCHER_API_PORT: this.NEWS_MATCHER_API_PORT,
+      NEWS_MATCHER_API_URL: this.NEWS_MATCHER_API_URL
     };
   }
 }

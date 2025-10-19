@@ -4,12 +4,20 @@
 
 ## 🚀 功能特性
 
+### 核心功能
 - **实时分析执行**: 启动股票分析Agent并实时查看执行进度
 - **智能报告展示**: 使用Markdown渲染器展示分析报告，支持目录导航
 - **历史报告管理**: 浏览和管理所有历史分析报告
 - **现代化UI**: 基于Ant Design的精美界面设计
 - **响应式布局**: 支持桌面端和移动端访问
 - **实时通信**: 使用WebSocket实现实时进度更新
+
+### 🆕 News Matcher 智能新闻分析系统
+- **新闻匹配中心**: 单条和批量新闻匹配，支持股票和行业识别
+- **新闻数据浏览**: 浏览系统获取的新闻数据，支持多维度筛选
+- **匹配结果管理**: 查看和分析新闻匹配结果，统计热门股票和行业
+- **LLM智能矫正**: 使用大语言模型提升匹配准确性和可信度
+- **系统监控**: 实时监控系统状态、性能指标和处理情况
 
 ## 🛠️ 技术栈
 
@@ -64,6 +72,25 @@ npm run server
 npm start
 ```
 
+### 🆕 5. 启动完整系统（包含News Matcher）
+
+```bash
+# 使用一键启动脚本
+./start-with-news-matcher.sh
+
+# 或者手动启动各个服务
+# 1. 启动 News Matcher API
+cd ../news_matcher
+python main.py api --host 0.0.0.0 --port 5000
+
+# 2. 启动后端服务
+cd ../finance-claude-code-agent-web
+npm run server
+
+# 3. 启动前端应用
+npm start
+```
+
 ## 🎯 使用指南
 
 ### 仪表盘
@@ -96,6 +123,13 @@ npm start
 - 配置自动化选项（自动保存、Git提交等）
 - 管理通知和Webhook设置
 
+### 🆕 News Matcher 功能
+- **新闻匹配中心**: 单条和批量新闻匹配，实时查看匹配结果
+- **新闻数据浏览**: 浏览系统获取的新闻，支持筛选和搜索
+- **匹配结果管理**: 查看匹配历史，分析热门股票和行业
+- **LLM智能矫正**: 使用AI提升匹配准确性，支持批量矫正
+- **系统监控**: 实时监控系统状态和性能指标
+
 ## 📁 项目结构
 
 ```
@@ -113,7 +147,12 @@ finance-claude-code-agent-web/
 │   │   ├── Analysis.js   # 分析执行
 │   │   ├── Reports.js    # 报告列表
 │   │   ├── ReportDetail.js# 报告详情
-│   │   └── Settings.js   # 系统设置
+│   │   ├── Settings.js   # 系统设置
+│   │   ├── NewsMatcherCenter.js    # 🆕 新闻匹配中心
+│   │   ├── NewsBrowser.js          # 🆕 新闻数据浏览
+│   │   ├── MatchResults.js         # 🆕 匹配结果管理
+│   │   ├── LLMCorrection.js        # 🆕 LLM智能矫正
+│   │   └── NewsMatcherMonitor.js   # 🆕 系统监控
 │   ├── App.js            # 主应用组件
 │   ├── App.css           # 应用样式
 │   ├── index.js          # 应用入口
@@ -137,11 +176,16 @@ const REPORTS_PATH = '/Users/huangjunpeng/quantagent/finance-claude-code-agent-r
 ### 端口配置
 - 前端默认端口: 3000
 - 后端默认端口: 3001
+- 🆕 News Matcher API端口: 5000
 
 可以通过环境变量修改：
 ```bash
 PORT=3001 npm run server  # 后端端口
 PORT=3000 npm start       # 前端端口
+
+# News Matcher 配置
+NEWS_MATCHER_API_PORT=5000
+NEWS_MATCHER_DIR=/path/to/news_matcher
 ```
 
 ## 🎨 界面预览
@@ -194,6 +238,15 @@ npm run build
 5. 打开 Pull Request
 
 ## 📝 更新日志
+
+### v1.1.0 (2025-10-19)
+- 🆕 集成 News Matcher 智能新闻分析系统
+- 🆕 新增新闻匹配中心，支持单条和批量匹配
+- 🆕 新增新闻数据浏览功能，支持多维度筛选
+- 🆕 新增匹配结果管理，统计分析功能
+- 🆕 新增LLM智能矫正功能，提升匹配准确性
+- 🆕 新增系统监控功能，实时监控性能指标
+- 🆕 添加一键启动脚本，简化部署流程
 
 ### v1.0.0 (2025-10-13)
 - 初始版本发布

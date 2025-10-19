@@ -39,6 +39,33 @@ const Sidebar = () => {
       type: 'divider',
     },
     {
+      key: 'news-matcher',
+      icon: <ExperimentOutlined />,
+      label: '新闻匹配系统',
+      children: [
+        {
+          key: '/news-matcher/center',
+          label: '匹配中心',
+        },
+        {
+          key: '/news-matcher/news-browser',
+          label: '新闻浏览',
+        },
+        {
+          key: '/news-matcher/results',
+          label: '匹配结果',
+        },
+        {
+          key: '/news-matcher/llm-correction',
+          label: 'LLM智能矫正',
+        },
+        {
+          key: '/news-matcher/monitor',
+          label: '系统监控',
+        },
+      ],
+    },
+    {
       key: '/agents',
       icon: <RobotOutlined />,
       label: 'Agent管理',
